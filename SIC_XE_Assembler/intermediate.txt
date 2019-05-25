@@ -1,0 +1,44 @@
+0000    0     FIRST     STL       RETADR    
+0003    0     CLOOP     +JSUB      RDREC     
+0007    0               LDA       LENGTH    
+000A    0               COMP      #0        
+000D    0               JEQ       ENDFILL   
+0010    0               +JSUB      WRREC     
+0014    0               J         CLOOP     
+0017    0     ENDFILL   LDA       EOF       
+001A    0               STA       BUFFER    
+001D    0               LDA       #3        
+0020    0               STA       LENGTH    
+0023    0               +JSUB      WRREC     
+0027    0               J         @RETADR   
+002A    0     RETADR    RESW      1         
+002D    0     LENGTH    RESW      1         
+0030    0     EOF       WORD      C'EOF'    
+0033    0     BUFFER    RESB      4096      
+1033    0     MAXLEN    WORD      4096      
+0000    1               CLEAR     X         
+0002    1               CLEAR     A         
+0004    1               CLEAR     S         
+0006    1               LDT       MAXLEN    
+0009    1     RLOOP     TD        INPUT     
+000C    1               JEQ       RLOOP     
+000F    1               RD        INPUT     
+0012    1               COMPR     A,S       
+0014    1               JEQ       EXIT      
+0017    1               +STCH      BUFFER,X  
+001B    1               TIXR      T         
+001D    1               JLT       RLOOP     
+0020    1     EXIT      +STX       LENGTH    
+0024    1               RSUB                
+0027    1     INPUT     BYTE      X'F1'     
+0028    1     MAXLEN    WORD      4096      
+0000    2               CLEAR     X         
+0002    2               +LDT       LENGTH    
+0006    2     WLOOP     TD        OUTPUT    
+0009    2               JEQ       WLOOP     
+000C    2               +LDCH      BUFFER,X  
+0010    2               WD        OUTPUT    
+0013    2               TIXR      T         
+0015    2               JLT       WLOOP     
+0018    2               RSUB                
+001B    2     OUTPUT    BYTE      X'05'     
